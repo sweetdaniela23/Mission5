@@ -11,8 +11,11 @@ namespace Mission4.Models
         [Key]
         [Required]
         public int MovieID { get; set; }
+        //foreign key relationship below for category
         [Required]
-        public string Category { get; set; }
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
+
         [Required]
         public string Title { get; set; }
         [Required]

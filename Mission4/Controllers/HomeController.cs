@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mission4.Models;
 using System;
@@ -11,13 +12,11 @@ namespace Mission4.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private MovieFormContext _blahContext { get; set; }
+        private MovieFormContext maContext { get; set; }
 
-        public HomeController(ILogger<HomeController> logger, MovieFormContext someName)
+        public HomeController(MovieFormContext someName)
         {
-            _logger = logger;
-            _blahContext = someName;
+            maContext = someName;
         }
 
         public IActionResult Index()
@@ -31,26 +30,49 @@ namespace Mission4.Controllers
         [HttpGet]
         public IActionResult MovieForm()
         {
+            ViewBag.Categories = maContext.Categories.ToList();
             return View();
         }
         [HttpPost]
         public IActionResult MovieForm(MovieEntry me)
         {
-            _blahContext.Add(me);
-            _blahContext.SaveChanges();
+            ViewBag.Categories = maContext.Categories.ToList();
+            maContext.Add(me);
+            maContext.SaveChanges();
 
-            return View("MovieForm", me);
+            return RedirectToAction("MovieList"); //changed from movieform and took out me changed view to redirect
         }
 
-        public IActionResult Privacy()
+        //[HttpGet]
+        public IActionResult MovieList ()
+        {
+
+            var entries = maContext.Entries
+                .Include(x=> x.Category)
+                //.OrderBy(x=>x.Title)
+                .ToList();
+            return View(entries);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int movieid)
+        {
+            ViewBag.Categories = maContext.Categories.ToList();
+            var entry = maContext.Entries.Single(x => x.MovieID == movieid);//this line is the error sequence has no element
+            return View("MovieForm", entry);
+        }
+        [HttpPost]
+        public IActionResult Edit (MovieEntry blah)
+        {
+            maContext.Update(blah);
+            maContext.SaveChanges();
+
+            return RedirectToAction("MovieList");
+        }
+
+        public IActionResult Delete()
         {
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

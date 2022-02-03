@@ -8,8 +8,8 @@ using Mission4.Models;
 namespace Mission4.Migrations
 {
     [DbContext(typeof(MovieFormContext))]
-    [Migration("20220127041416_thisone")]
-    partial class thisone
+    [Migration("20220202215614_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -17,15 +17,55 @@ namespace Mission4.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.22");
 
+            modelBuilder.Entity("Mission4.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            CategoryName = "Drama"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            CategoryName = "Action"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            CategoryName = "Fantasy"
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            CategoryName = "Romance"
+                        },
+                        new
+                        {
+                            CategoryId = 5,
+                            CategoryName = "Comedy"
+                        });
+                });
+
             modelBuilder.Entity("Mission4.Models.MovieEntry", b =>
                 {
                     b.Property<int>("MovieID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DirectorFirstName")
                         .IsRequired()
@@ -59,13 +99,15 @@ namespace Mission4.Migrations
 
                     b.HasKey("MovieID");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Entries");
 
                     b.HasData(
                         new
                         {
                             MovieID = 1,
-                            Category = "Fantasy",
+                            CategoryId = 1,
                             DirectorFirstName = "Marbalble",
                             DirectorLastName = "Nonito",
                             Edited = false,
@@ -78,7 +120,7 @@ namespace Mission4.Migrations
                         new
                         {
                             MovieID = 2,
-                            Category = "Action",
+                            CategoryId = 2,
                             DirectorFirstName = "Stephen",
                             DirectorLastName = "Spielberg",
                             Edited = false,
@@ -91,7 +133,7 @@ namespace Mission4.Migrations
                         new
                         {
                             MovieID = 3,
-                            Category = "Drama",
+                            CategoryId = 3,
                             DirectorFirstName = "Johnny",
                             DirectorLastName = "Appleseed",
                             Edited = false,
@@ -101,6 +143,15 @@ namespace Mission4.Migrations
                             Title = "Titanic",
                             Year = "1990"
                         });
+                });
+
+            modelBuilder.Entity("Mission4.Models.MovieEntry", b =>
+                {
+                    b.HasOne("Mission4.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
