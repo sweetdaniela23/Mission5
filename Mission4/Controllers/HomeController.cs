@@ -36,11 +36,20 @@ namespace Mission4.Controllers
         [HttpPost]
         public IActionResult MovieForm(MovieEntry me)
         {
-            ViewBag.Categories = maContext.Categories.ToList();
-            maContext.Add(me);
-            maContext.SaveChanges();
+            if (ModelState.IsValid)
+            {
+                ViewBag.Categories = maContext.Categories.ToList();
+                maContext.Add(me);
+                maContext.SaveChanges();
 
-            return RedirectToAction("MovieList"); //changed from movieform and took out me changed view to redirect
+                return RedirectToAction("MovieList"); //changed from movieform and took out me changed view to redirect
+            }
+            else
+            {
+                ViewBag.Categories = maContext.Categories.ToList();
+                return View();
+            }
+            
         }
 
         //[HttpGet]
@@ -55,24 +64,32 @@ namespace Mission4.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int movieid)
+        public IActionResult Edit(int applicationid)
         {
             ViewBag.Categories = maContext.Categories.ToList();
-            var entry = maContext.Entries.Single(x => x.MovieID == movieid);//this line is the error sequence has no element
+            var entry = maContext.Entries.Single(x => x.MovieID == applicationid);
             return View("MovieForm", entry);
         }
         [HttpPost]
         public IActionResult Edit (MovieEntry blah)
         {
-            maContext.Update(blah);
+            maContext.Entries.Update(blah);
             maContext.SaveChanges();
 
             return RedirectToAction("MovieList");
         }
-
-        public IActionResult Delete()
+        [HttpGet]
+        public IActionResult Delete(int applicationid)
         {
-            return View();
+            var application = maContext.Entries.Single(x => x.MovieID == applicationid);
+            return View(application);
+        }
+        [HttpPost]
+        public IActionResult Delete(MovieEntry me)
+        {
+            maContext.Entries.Remove(me);
+            maContext.SaveChanges();
+            return View("MovieList");
         }
     }
 }

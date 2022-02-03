@@ -16,15 +16,15 @@ namespace Mission4.Models
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 
-        [Required]
+        [Required (ErrorMessage = "Please enter a movie Title.")]
         public string Title { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please enter a valid year.")]
         public string Year { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please enter a Director First Name.")]
         public string DirectorFirstName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please enter a Director Last Name.")]
         public string DirectorLastName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please enter a movie rating.")]
         public string Rating { get; set; }
         public bool Edited { get; set; }
         public string LentTo { get; set; }
