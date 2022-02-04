@@ -64,10 +64,10 @@ namespace Mission4.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int applicationid)
+        public IActionResult Edit(int movieid)
         {
             ViewBag.Categories = maContext.Categories.ToList();
-            var entry = maContext.Entries.Single(x => x.MovieID == applicationid);
+            var entry = maContext.Entries.Single(x => x.MovieID == movieid);
             return View("MovieForm", entry);
         }
         [HttpPost]
@@ -89,7 +89,13 @@ namespace Mission4.Controllers
         {
             maContext.Entries.Remove(me);
             maContext.SaveChanges();
-            return View("MovieList");
+            return RedirectToAction("MovieList");
+        }
+
+        //here is what I added to get the edit to work
+        public IActionResult AddNew()
+        {
+            return View(new MovieEntry());
         }
     }
 }

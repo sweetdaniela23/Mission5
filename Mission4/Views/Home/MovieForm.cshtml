@@ -10,15 +10,15 @@
 <h1>Submit a movie entry here:</h1>
 <div>
     <form method="post">
-        
+
         <label asp-for="CategoryId">Category: </label>
-        <select asp-for="CategoryId" >
+        <select asp-for="CategoryId">
             <option value="">-Select a Category-</option>
             @foreach (Category c in ViewBag.Categories)//potential problem here
             {
                 <option value="@c.CategoryId">@c.CategoryName</option>
             }
-            
+
         </select>/> </br>
 
         <label asp-for="Title">Title: </label>
